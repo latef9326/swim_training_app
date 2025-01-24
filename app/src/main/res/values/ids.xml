@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="logo" type="id" />
+    <item name="etName" type="id" />
+    <item name="etConfirmPassword" type="id" />
+    <item name="ageSwitch" type="id" />
+    <item name="btnSignUp" type="id" />
+    <item name="tvLogin" type="id" />
+    <item name="tvWelcomeMessage" type="id" />
+    <item name="tvWelcome" type="id" />
+    <item name="btnLogout" type="id" />
+    <item name="etHeartRate" type="id" />
+    <item name="tvSpeed" type="id" />
+    <item name="tvHeartRateZone" type="id" />
+    <item name="tvCalories" type="id" />
+    <item name="tvTips" type="id" />
+    <item name="btnSave" type="id" />
+    <item name="training_title" type="id" />
+    <item name="training_date" type="id" />
+    <item name="training_calories" type="id" />
+</resources>
