@@ -10,6 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
+/**
+ * Activity for user registration.
+ *
+ * This activity allows new users to create an account by providing their email and password.
+ * It validates the input fields, registers the user via Firebase Authentication, and saves
+ * additional user data to Firestore. Upon successful registration, the user is redirected
+ * to the LoginActivity.
+ */
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
@@ -18,19 +26,22 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance()
 
+        // Initialize views
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
 
+        // Set click listener for the "Sign Up" button
         btnSignUp.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
             val confirmPassword = etConfirmPassword.text.toString().trim()
 
-            // Walidacja danych wejściowych
+            // Validate input fields
             if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Invalid email address!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -46,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Rejestracja użytkownika
+            // Register the user with Firebase Authentication
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -59,6 +70,7 @@ class RegisterActivity : AppCompatActivity() {
                             "height" to 0
                         )
 
+                        // Save additional user data to Firestore
                         FirebaseFirestore.getInstance().collection("users").document(userId!!)
                             .set(user)
                             .addOnSuccessListener {

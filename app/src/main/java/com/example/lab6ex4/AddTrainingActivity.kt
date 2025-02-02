@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AddTrainingActivity : AppCompatActivity() {
 
@@ -52,7 +54,7 @@ class AddTrainingActivity : AppCompatActivity() {
             val heartRate = etHeartRate.text.toString().toIntOrNull() ?: -1
 
             // Validate inputs
-            if (date.isEmpty() || strokeType.isEmpty() || duration <= 0 || distance <= 0 || effortLevel <= 0 || heartRate <= 0) {
+            if (!validateInputs(date, duration, distance, strokeType, effortLevel, heartRate)) {
                 Toast.makeText(this, "Please fill in all fields correctly.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -79,6 +81,43 @@ class AddTrainingActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Validates the input fields for the training data.
+     *
+     * @param date The date of the training in "dd/MM/yyyy" format.
+     * @param duration The duration of the training in minutes.
+     * @param distance The distance covered in meters.
+     * @param strokeType The type of swimming stroke.
+     * @param effortLevel The perceived effort level (1-10).
+     * @param heartRate The average heart rate during the training.
+     * @return `true` if all inputs are valid, `false` otherwise.
+     */
+    private fun validateInputs(
+        date: String,
+        duration: Int,
+        distance: Int,
+        strokeType: String,
+        effortLevel: Int,
+        heartRate: Int
+    ): Boolean {
+        // Walidacja daty (format dd/MM/yyyy)
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        dateFormat.isLenient = false // Nie akceptuj nieprawidłowych dat (np. 30 lutego)
+        return try {
+            dateFormat.parse(date) // Jeśli data jest nieprawidłowa, rzuci wyjątek
+            duration > 0 && distance > 0 && strokeType.isNotEmpty() && effortLevel > 0 && heartRate > 0
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Loads the user's weight from Firestore.
+     *
+     * This method retrieves the user's weight from the "health" field in the Firestore document
+     * associated with the current user. If the weight is not set or the user is not logged in,
+     * appropriate messages are displayed.
+     */
     private fun loadUserWeight() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
@@ -112,6 +151,20 @@ class AddTrainingActivity : AppCompatActivity() {
             Toast.makeText(this, "User not logged.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    /**
+     * Saves the training data to Firestore using the DatabaseManager.
+     *
+     * @param date The date of the training.
+     * @param duration The duration of the training in minutes.
+     * @param distance The distance covered in meters.
+     * @param strokeType The type of swimming stroke.
+     * @param effortLevel The perceived effort level (1-10).
+     * @param heartRate The average heart rate during the training.
+     * @param speed The calculated speed in meters per second.
+     * @param calories The calculated calories burned.
+     * @param heartRateZone The classified heart rate zone.
+     */
     private fun saveTrainingWithDatabaseManager(
         date: String,
         duration: Int,
@@ -142,11 +195,9 @@ class AddTrainingActivity : AppCompatActivity() {
                 Log.e("AddTrainingActivity", "Error saving training: ${error ?: "Unknown error"}")
                 Toast.makeText(this, "Failed to save training: ${error ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 }
-
 
 
 

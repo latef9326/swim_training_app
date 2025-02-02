@@ -36,6 +36,10 @@
         <activity android:name=".RegisterActivity" android:exported="true" />
         <activity android:name=".ResultsActivity" android:exported="true" />
         <activity android:name=".TrainingListActivity" android:exported="true" />
+        <activity
+            android:name=".EditTrainingActivity"
+            android:exported="false"
+            android:label="Edit Training"/>
 
     </application>
 </manifest>
