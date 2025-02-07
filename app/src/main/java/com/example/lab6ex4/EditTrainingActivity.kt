@@ -196,8 +196,14 @@ class EditTrainingActivity : AppCompatActivity() {
                     setResult(RESULT_OK)
                     finish()
                 }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Update failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                .addOnSuccessListener {
+                    setResult(RESULT_OK)
+                    finish()
+                    // Show notification
+                    NotificationHelper(this).showNotification(
+                        "Training Updated",
+                        "Your swimming session on ${updatedTraining.date} was modified!"
+                    )
                 }
         }
     }

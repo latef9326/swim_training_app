@@ -191,6 +191,11 @@ class AddTrainingActivity : AppCompatActivity() {
         databaseManager.saveTraining(trainingData) { success, error ->
             if (success) {
                 Toast.makeText(this, "Training saved successfully.", Toast.LENGTH_SHORT).show()
+                // Show notification
+                NotificationHelper(this).showNotification(
+                    "New Training Saved",
+                    "Your swimming session on $date was recorded!"
+                )
             } else {
                 Log.e("AddTrainingActivity", "Error saving training: ${error ?: "Unknown error"}")
                 Toast.makeText(this, "Failed to save training: ${error ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
